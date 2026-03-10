@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GSHOP Converter</title>
+
+  <style>
+    :root{
+      --bg:#070809;
+      --panel:#0c0d0f;
+      --panel-2:#111317;
+      --border:#24272d;
+      --border-soft:#1a1d22;
+      --text:#f4f1ea;
+      --muted:#7d7f85;
+      --accent:#f3f0ea;
+      --accent-text:#0b0c0e;
+      --shadow:0 20px 50px rgba(0,0,0,.45);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, Arial, sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .app{
+      max-width:1280px;
+      margin:0 auto;
+      background:linear-gradient(180deg, #090a0c 0%, #08090b 100%);
+      border:1px solid #2a1518;
+      border-radius:22px;
+      padding:28px;
+      box-shadow:var(--shadow);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      padding-bottom:24px;
+      border-bottom:1px solid var(--border-soft);
+      margin-bottom:28px;
+    }
+
+    .eyebrow{
+      font-size:13px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:#9a8f84;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0;
+      font-size:52px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      text-transform:uppercase;
+    }
+
+    .subtitle{
+      font-size:14px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:#8b8f96;
+      margin-top:8px;
+    }
+
+    .topbar-right{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:12px;
+    }
+
+    .lang-switch{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .lang-btn,
+    .upload-btn,
+    .action-btn{
+      border:1px solid #30343b;
+      background:#0d0f12;
+      color:#ebe8e2;
+      padding:10px 14px;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .lang-btn:hover,
+    .upload-btn:hover,
+    .action-btn:hover{
+      background:#14171b;
+    }
+
+    .lang-btn.active{
+      background:var(--accent);
+      color:var(--accent-text);
+      border-color:var(--accent);
+    }
+
+    .upload-btn{
+      background:var(--accent);
+      color:var(--accent-text);
+      border-color:var(--accent);
+      padding:16px 24px;
+      border-radius:2px;
+      font-size:15px;
+      box-shadow:0 0 30px rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+
+    .upload-btn:hover{
+      filter:brightness(1.02);
+      transform:translateY(-1px);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:400px 1fr;
+      gap:28px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01));
+      border:1px dashed #2f3238;
+      min-height:680px;
+      padding:22px;
+      position:relative;
+    }
+
+    .panel-title{
+      margin:0;
+      font-size:16px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:#9fa3aa;
+    }
+
+    .panel-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .dropzone{
+      min-height:590px;
+      border:1px dashed #2f3238;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:28px;
+      background:rgba(255,255,255,.01);
+      transition:.18s ease;
+      cursor:pointer;
+    }
+
+    .dropzone.drag{
+      border-color:#50545d;
+      background:rgba(255,255,255,.03);
+    }
+
+    .drop-inner{
+      max-width:280px;
+    }
+
+    .icon-circle{
+      width:96px;
+      height:96px;
+      margin:0 auto 22px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      color:#8c9097;
+    }
+
+    .drop-title{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:12px;
+      color:var(--text);
+      letter-spacing:.01em;
+      text-transform:uppercase;
+    }
+
+    .drop-text{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .hint{
+      margin-top:20px;
+      color:#6f7379;
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .results-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      min-height:590px;
+    }
+
+    .empty{
+      flex:1;
+      border:1px dashed #2f3238;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:28px;
+      background:rgba(255,255,255,.01);
+    }
+
+    .empty .icon-circle{
+      width:92px;
+      height:92px;
+      font-size:32px;
+      margin-bottom:18px;
+    }
+
+    .empty-title{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:10px;
+      text-transform:uppercase;
+    }
+
+    .empty-text{
+      color:var(--muted);
+      line-height:1.7;
+      max-width:420px;
+      margin:0 auto;
+    }
+
+    .result-card{
+      border:1px solid var(--border);
+      background:var(--panel-2);
+      padding:16px;
+    }
+
+    .result-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:12px;
+    }
+
+    .file-name{
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      color:#d6d1c9;
+      word-break:break-word;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    textarea{
+      width:100%;
+      min-height:220px;
+      resize:vertical;
+      border:1px solid #2a2e35;
+      background:#08090b;
+      color:#d5dbe4;
+      padding:14px;
+      font:13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      outline:none;
+    }
+
+    .error{
+      border:1px solid #3a2628;
+      background:#140d0e;
+      color:#f0c4c7;
+      padding:14px;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .status{
+      margin-top:16px;
+      color:#7f848c;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    input[type="file"]{
+      display:none;
+    }
+
+    @media (max-width:980px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+
+      .panel,
+      .dropzone{
+        min-height:auto;
+      }
+
+      h1{
+        font-size:40px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .topbar-right{
+        align-items:flex-start;
+      }
+
+      .lang-switch{
+        justify-content:flex-start;
+      }
+
+      .panel-header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .result-head{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1 data-i18n="brand_title">GSHOP Converter</h1>
+        <div class="subtitle" data-i18n="brand_subtitle">to rcore tattoo</div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="lang-switch">
+          <button class="lang-btn active" data-lang="it">IT</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="sp">SP</button>
+        </div>
+        <button class="upload-btn" id="openPicker" data-i18n="upload_button">+ Carica File</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title" data-i18n="left_title">Selezione file</h2>
+        </div>
+
+        <label class="dropzone" id="dropzone" for="fileInput">
+          <div class="drop-inner">
+            <div class="icon-circle">⤴</div>
+            <div class="drop-title" data-i18n="drop_title">Nessun File Selezionato</div>
+            <div class="drop-text" data-i18n="drop_text">
+              Trascina qui i file JSON da convertire oppure clicca per selezionarli.
+            </div>
+            <div class="hint" id="hintText"></div>
+          </div>
+        </label>
+
+        <input id="fileInput" type="file" multiple accept=".json,application/json" />
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title" data-i18n="right_title">File convertiti</h2>
+          <button class="action-btn" id="downloadAll" data-i18n="download_all">Scarica tutti</button>
+        </div>
+
+        <div class="results-wrap" id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const keyMap = {
+      Collection: "collection",
+      Name: "name",
+      HashNameMale: "hashMale",
+      HashNameFemale: "hashFemale",
+      Zone: "zone",
+      Price: "price"
+    };
+
+    const translations = {
+      it: {
+        brand_small: "GSHOP",
+        brand_title: "GSHOP Converter",
+        brand_subtitle: "to rcore tattoo",
+        upload_button: "+ Carica File",
+        left_title: "Selezione file",
+        right_title: "File convertiti",
+        download_all: "Scarica tutti",
+        drop_title: "Nessun File Selezionato",
+        drop_text: "Trascina qui i file JSON da convertire oppure clicca per selezionarli.",
+        hint_title: "Conversione automatica chiavi:",
+        empty_title: "Nessun File Convertito",
+        empty_text: "Carica uno o più file dal riquadro a sinistra. Qui compariranno i risultati, uno per file.",
+        status_waiting: "In attesa di file",
+        status_done: "{total} file caricati · {valid} convertiti",
+        copy: "Copia",
+        download: "Scarica",
+        invalid_json: "JSON non valido o file malformato.",
+        no_files_alert: "Nessun file convertito"
+      },
+      en: {
+        brand_small: "GSHOP",
+        brand_title: "GSHOP Converter",
+        brand_subtitle: "to rcore tattoo",
+        upload_button: "+ Upload Files",
+        left_title: "File selection",
+        right_title: "Converted files",
+        download_all: "Download all",
+        drop_title: "No File Selected",
+        drop_text: "Drag JSON files here to convert them or click to select them.",
+        hint_title: "Automatic key conversion:",
+        empty_title: "No Converted Files",
+        empty_text: "Upload one or more files from the box on the left. Results will appear here, one per file.",
+        status_waiting: "Waiting for files",
+        status_done: "{total} files loaded · {valid} converted",
+        copy: "Copy",
+        download: "Download",
+        invalid_json: "Invalid JSON or malformed file.",
+        no_files_alert: "No converted files"
+      },
+      fr: {
+        brand_small: "GSHOP",
+        brand_title: "GSHOP Converter",
+        brand_subtitle: "to rcore tattoo",
+        upload_button: "+ Importer Fichiers",
+        left_title: "Sélection des fichiers",
+        right_title: "Fichiers convertis",
+        download_all: "Tout télécharger",
+        drop_title: "Aucun Fichier Sélectionné",
+        drop_text: "Glissez vos fichiers JSON ici ou cliquez pour les sélectionner.",
+        hint_title: "Conversion automatique des clés :",
+        empty_title: "Aucun Fichier Converti",
+        empty_text: "Importez un ou plusieurs fichiers depuis le panneau de gauche. Les résultats apparaîtront ici, un par fichier.",
+        status_waiting: "En attente de fichiers",
+        status_done: "{total} fichiers chargés · {valid} convertis",
+        copy: "Copier",
+        download: "Télécharger",
+        invalid_json: "JSON invalide ou fichier mal formé.",
+        no_files_alert: "Aucun fichier converti"
+      },
+      sp: {
+        brand_small: "GSHOP",
+        brand_title: "GSHOP Converter",
+        brand_subtitle: "to rcore tattoo",
+        upload_button: "+ Subir Archivos",
+        left_title: "Selección de archivos",
+        right_title: "Archivos convertidos",
+        download_all: "Descargar todo",
+        drop_title: "Ningún Archivo Seleccionado",
+        drop_text: "Arrastra aquí los archivos JSON para convertirlos o haz clic para seleccionarlos.",
+        hint_title: "Conversión automática de claves:",
+        empty_title: "Ningún Archivo Convertido",
+        empty_text: "Carga uno o más archivos desde el panel izquierdo. Aquí aparecerán los resultados, uno por archivo.",
+        status_waiting: "Esperando archivos",
+        status_done: "{total} archivos cargados · {valid} convertidos",
+        copy: "Copiar",
+        download: "Descargar",
+        invalid_json: "JSON no válido o archivo malformado.",
+        no_files_alert: "Ningún archivo convertido"
+      }
+    };
+
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const results = document.getElementById("results");
+    const status = document.getElementById("status");
+    const openPicker = document.getElementById("openPicker");
+    const downloadAllBtn = document.getElementById("downloadAll");
+    const hintText = document.getElementById("hintText");
+    const langButtons = document.querySelectorAll(".lang-btn");
+
+    let currentLang = "it";
+    let convertedFiles = [];
+    let emptyStateVisible = true;
+
+    function t(key) {
+      return translations[currentLang][key] || key;
+    }
+
+    function renderHint() {
+      hintText.innerHTML = `
+        ${t("hint_title")}<br>
+        Collection → collection<br>
+        Name → name<br>
+        HashNameMale → hashMale<br>
+        HashNameFemale → hashFemale<br>
+        Zone → zone<br>
+        Price → price
+      `;
+    }
+
+    function renderStaticTexts() {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        el.textContent = t(key);
+      });
+
+      if (convertedFiles.length === 0) {
+        status.textContent = t("status_waiting");
+      }
+
+      renderHint();
+      renderEmptyStateIfNeeded();
+      updateButtonsLanguage();
+    }
+
+    function updateButtonsLanguage() {
+      document.querySelectorAll("[data-copy-btn]").forEach(btn => {
+        btn.textContent = t("copy");
+      });
+
+      document.querySelectorAll("[data-download-btn]").forEach(btn => {
+        btn.textContent = t("download");
+      });
+
+      document.querySelectorAll("[data-error-text]").forEach(el => {
+        el.textContent = t("invalid_json");
+      });
+    }
+
+    function renderEmptyStateIfNeeded() {
+      if (results.children.length === 0 || emptyStateVisible) {
+        results.innerHTML = `
+          <div class="empty">
+            <div>
+              <div class="icon-circle">☰</div>
+              <div class="empty-title">${t("empty_title")}</div>
+              <div class="empty-text">${t("empty_text")}</div>
+            </div>
+          </div>
+        `;
+        emptyStateVisible = true;
+      }
+    }
+
+    function clearEmptyState() {
+      const empty = results.querySelector(".empty");
+      if (empty) empty.remove();
+      emptyStateVisible = false;
+    }
+
+    function renameKeysDeep(value) {
+      if (Array.isArray(value)) {
+        return value.map(renameKeysDeep);
+      }
+
+      if (value && typeof value === "object") {
+        const out = {};
+
+        for (const [key, val] of Object.entries(value)) {
+          const newKey = keyMap[key] || key;
+          out[newKey] = renameKeysDeep(val);
+        }
+
+        return out;
+      }
+
+      return value;
+    }
+
+    function getOutputFilename(name) {
+      return name;
+    }
+
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (error) {
+        console.error("Copy failed", error);
+      }
+    }
+
+    function createResultCard(fileName, outputName, formatted) {
+      const card = document.createElement("div");
+      card.className = "result-card";
+
+      card.innerHTML = `
+        <div class="result-head">
+          <div class="file-name">${outputName}</div>
+          <div class="actions">
+            <button class="action-btn" data-copy-btn>${t("copy")}</button>
+            <button class="action-btn" data-download-btn>${t("download")}</button>
+          </div>
+        </div>
+        <textarea readonly></textarea>
+      `;
+
+      card.querySelector("textarea").value = formatted;
+
+      card.querySelector("[data-copy-btn]").addEventListener("click", () => {
+        copyText(formatted);
+      });
+
+      card.querySelector("[data-download-btn]").addEventListener("click", () => {
+        downloadFile(outputName, formatted);
+      });
+
+      return card;
+    }
+
+    function createErrorCard(fileName) {
+      const card = document.createElement("div");
+      card.className = "result-card";
+
+      card.innerHTML = `
+        <div class="result-head">
+          <div class="file-name">${fileName}</div>
+        </div>
+        <div class="error" data-error-text>${t("invalid_json")}</div>
+      `;
+
+      return card;
+    }
+
+    async function handleFiles(fileList) {
+      const files = Array.from(fileList);
+      if (!files.length) return;
+
+      convertedFiles = [];
+      results.innerHTML = "";
+      clearEmptyState();
+
+      let validCount = 0;
+
+      for (const file of files) {
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          const converted = renameKeysDeep(parsed);
+          const formatted = JSON.stringify(converted, null, 2);
+          const outputName = getOutputFilename(file.name);
+
+          convertedFiles.push({
+            name: outputName,
+            content: formatted
+          });
+
+          results.appendChild(createResultCard(file.name, outputName, formatted));
+          validCount++;
+        } catch {
+          results.appendChild(createErrorCard(file.name));
+        }
+      }
+
+      if (results.children.length === 0) {
+        renderEmptyStateIfNeeded();
+      } else {
+        emptyStateVisible = false;
+      }
+
+      status.textContent = t("status_done")
+        .replace("{total}", files.length)
+        .replace("{valid}", validCount);
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+
+      langButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+
+      renderStaticTexts();
+    }
+
+    openPicker.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    downloadAllBtn.addEventListener("click", () => {
+      if (convertedFiles.length === 0) {
+        alert(t("no_files_alert"));
+        return;
+      }
+
+      convertedFiles.forEach(file => {
+        downloadFile(file.name, file.content);
+      });
+    });
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("drag");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("drag");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("drag");
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      handleFiles(e.target.files);
+    });
+
+    langButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        setLanguage(btn.dataset.lang);
+      });
+    });
+
+    renderStaticTexts();
+  </script>
+</body>
+</html>
