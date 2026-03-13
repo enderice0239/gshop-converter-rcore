@@ -56,14 +56,6 @@
       margin-bottom:28px;
     }
 
-    .eyebrow{
-      font-size:13px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:#9a8f84;
-      margin-bottom:10px;
-    }
-
     h1{
       margin:0;
       font-size:52px;
@@ -97,7 +89,8 @@
 
     .lang-btn,
     .upload-btn,
-    .action-btn{
+    .action-btn,
+    .back-btn{
       border:1px solid #30343b;
       background:#0d0f12;
       color:#ebe8e2;
@@ -112,7 +105,8 @@
 
     .lang-btn:hover,
     .upload-btn:hover,
-    .action-btn:hover{
+    .action-btn:hover,
+    .back-btn:hover{
       background:#14171b;
     }
 
@@ -136,6 +130,97 @@
     .upload-btn:hover{
       filter:brightness(1.02);
       transform:translateY(-1px);
+    }
+
+    .hidden{
+      display:none !important;
+    }
+
+    .landing{
+      min-height:700px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:30px 0 10px;
+    }
+
+    .landing-card{
+      width:100%;
+      max-width:980px;
+      border:1px dashed #2f3238;
+      background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01));
+      min-height:560px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:40px 30px;
+    }
+
+    .landing-inner{
+      width:100%;
+      max-width:760px;
+    }
+
+    .landing-title{
+      font-size:72px;
+      line-height:1;
+      margin:0 0 14px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:-0.04em;
+    }
+
+    .landing-subtitle{
+      color:var(--muted);
+      font-size:16px;
+      margin-bottom:38px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+
+    .brand-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+
+    .brand-btn{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      cursor:pointer;
+      transition:.18s ease;
+      padding:24px;
+      color:#ffffff;
+    }
+
+    .brand-btn:hover{
+      transform:translateY(-2px);
+      border-color:#4a4f57;
+      background:#14171b;
+    }
+
+    .brand-btn img{
+      width:88px;
+      height:88px;
+      object-fit:contain;
+      border-radius:16px;
+      background:#fff;
+      padding:8px;
+    }
+
+    .brand-name{
+      font-size:20px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:#ffffff;
     }
 
     .layout{
@@ -223,6 +308,7 @@
       color:#6f7379;
       font-size:13px;
       line-height:1.6;
+      white-space:pre-line;
     }
 
     .results-wrap{
@@ -340,6 +426,14 @@
         font-size:40px;
       }
 
+      .landing-title{
+        font-size:46px;
+      }
+
+      .brand-grid{
+        grid-template-columns:1fr;
+      }
+
       .topbar{
         flex-direction:column;
         align-items:flex-start;
@@ -371,7 +465,7 @@
     <div class="topbar">
       <div>
         <h1 data-i18n="brand_title">GSHOP Converter</h1>
-        <div class="subtitle" data-i18n="brand_subtitle">to rcore tattoo</div>
+        <div class="subtitle" id="brandSubtitle">to rcore tattoo</div>
       </div>
 
       <div class="topbar-right">
@@ -381,11 +475,35 @@
           <button class="lang-btn" data-lang="fr">FR</button>
           <button class="lang-btn" data-lang="sp">ES</button>
         </div>
-        <button class="upload-btn" id="openPicker" data-i18n="upload_button">+ Carica File</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="back-btn hidden" id="backHome" data-i18n="back_home">Indietro</button>
+          <button class="upload-btn hidden" id="openPicker" data-i18n="upload_button">+ Carica File</button>
+        </div>
       </div>
     </div>
 
-    <div class="layout">
+    <div id="landingView" class="landing">
+      <div class="landing-card">
+        <div class="landing-inner">
+          <h2 class="landing-title" data-i18n="convert_to">Convert to</h2>
+          <div class="landing-subtitle" data-i18n="choose_target">Choose the target format</div>
+
+          <div class="brand-grid">
+            <button class="brand-btn" data-target="rcore">
+              <img src="https://avatars.githubusercontent.com/u/82770217?s=280&v=4" alt="rcore logo">
+              <div class="brand-name">rcore</div>
+            </button>
+
+            <button class="brand-btn" data-target="izzy">
+              <img src="https://dunb17ur4ymx4.cloudfront.net/webstore/logos/da1cf2dc98444bb3b394bd2e404e67cb305efb27.png" alt="izzy logo">
+              <div class="brand-name">izzy</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="converterView" class="layout hidden">
       <div class="panel">
         <div class="panel-header">
           <h2 class="panel-title" data-i18n="left_title">Selezione file</h2>
@@ -402,7 +520,7 @@
           </div>
         </label>
 
-        <input id="fileInput" type="file" multiple accept=".json,application/json" />
+        <input id="fileInput" type="file" multiple accept=".json,application/json,.lua,text/plain" />
         <div class="status" id="status"></div>
       </div>
 
@@ -418,7 +536,106 @@
   </div>
 
   <script>
-    const keyMap = {
+    const translations = {
+      it: {
+        brand_title: "GSHOP Converter",
+        upload_button: "+ Carica File",
+        left_title: "Selezione file",
+        right_title: "File convertiti",
+        download_all: "Scarica tutti",
+        drop_title: "Nessun File Selezionato",
+        drop_text: "Trascina qui i file da convertire oppure clicca per selezionarli.",
+        hint_title_rcore: "Conversione verso rcore:",
+        hint_title_izzy: "Conversione verso izzy:",
+        empty_title: "Nessun File Convertito",
+        empty_text: "Carica uno o più file dal riquadro a sinistra. Qui compariranno i risultati, uno per file.",
+        status_waiting: "In attesa di file",
+        status_done: "{total} file caricati · {valid} convertiti",
+        copy: "Copia",
+        download: "Scarica",
+        invalid_json: "File non valido o contenuto malformato.",
+        no_files_alert: "Nessun file convertito",
+        convert_to: "Converti in",
+        choose_target: "Scegli il formato di destinazione",
+        back_home: "Indietro",
+        subtitle_rcore: "to rcore tattoo",
+        subtitle_izzy: "to izzy tattoo"
+      },
+      en: {
+        brand_title: "GSHOP Converter",
+        upload_button: "+ Upload Files",
+        left_title: "File selection",
+        right_title: "Converted files",
+        download_all: "Download all",
+        drop_title: "No File Selected",
+        drop_text: "Drag files here to convert them or click to select them.",
+        hint_title_rcore: "Convert to rcore:",
+        hint_title_izzy: "Convert to izzy:",
+        empty_title: "No Converted Files",
+        empty_text: "Upload one or more files from the box on the left. Results will appear here, one per file.",
+        status_waiting: "Waiting for files",
+        status_done: "{total} files loaded · {valid} converted",
+        copy: "Copy",
+        download: "Download",
+        invalid_json: "Invalid file or malformed content.",
+        no_files_alert: "No converted files",
+        convert_to: "Convert to",
+        choose_target: "Choose the target format",
+        back_home: "Back",
+        subtitle_rcore: "to rcore tattoo",
+        subtitle_izzy: "to izzy tattoo"
+      },
+      fr: {
+        brand_title: "GSHOP Converter",
+        upload_button: "+ Importer Fichiers",
+        left_title: "Sélection des fichiers",
+        right_title: "Fichiers convertis",
+        download_all: "Tout télécharger",
+        drop_title: "Aucun Fichier Sélectionné",
+        drop_text: "Glissez vos fichiers ici ou cliquez pour les sélectionner.",
+        hint_title_rcore: "Conversion vers rcore :",
+        hint_title_izzy: "Conversion vers izzy :",
+        empty_title: "Aucun Fichier Converti",
+        empty_text: "Importez un ou plusieurs fichiers depuis le panneau de gauche. Les résultats apparaîtront ici, un par fichier.",
+        status_waiting: "En attente de fichiers",
+        status_done: "{total} fichiers chargés · {valid} convertis",
+        copy: "Copier",
+        download: "Télécharger",
+        invalid_json: "Fichier invalide ou contenu mal formé.",
+        no_files_alert: "Aucun fichier converti",
+        convert_to: "Convertir vers",
+        choose_target: "Choisissez le format de destination",
+        back_home: "Retour",
+        subtitle_rcore: "to rcore tattoo",
+        subtitle_izzy: "to izzy tattoo"
+      },
+      sp: {
+        brand_title: "GSHOP Converter",
+        upload_button: "+ Subir Archivos",
+        left_title: "Selección de archivos",
+        right_title: "Archivos convertidos",
+        download_all: "Descargar todo",
+        drop_title: "Ningún Archivo Seleccionado",
+        drop_text: "Arrastra aquí los archivos para convertirlos o haz clic para seleccionarlos.",
+        hint_title_rcore: "Conversión a rcore:",
+        hint_title_izzy: "Conversión a izzy:",
+        empty_title: "Ningún Archivo Convertido",
+        empty_text: "Carga uno o más archivos desde el panel izquierdo. Aquí aparecerán los resultados, uno por archivo.",
+        status_waiting: "Esperando archivos",
+        status_done: "{total} archivos cargados · {valid} convertidos",
+        copy: "Copiar",
+        download: "Descargar",
+        invalid_json: "Archivo no válido o contenido malformado.",
+        no_files_alert: "Ningún archivo convertido",
+        convert_to: "Convertir a",
+        choose_target: "Elige el formato de destino",
+        back_home: "Volver",
+        subtitle_rcore: "to rcore tattoo",
+        subtitle_izzy: "to izzy tattoo"
+      }
+    };
+
+    const rcoreKeyMap = {
       Collection: "collection",
       Name: "name",
       HashNameMale: "hashMale",
@@ -427,87 +644,13 @@
       Price: "price"
     };
 
-    const translations = {
-      it: {
-        brand_small: "GSHOP",
-        brand_title: "GSHOP Converter",
-        brand_subtitle: "to rcore tattoo",
-        upload_button: "+ Carica File",
-        left_title: "Selezione file",
-        right_title: "File convertiti",
-        download_all: "Scarica tutti",
-        drop_title: "Nessun File Selezionato",
-        drop_text: "Trascina qui i file JSON da convertire oppure clicca per selezionarli.",
-        hint_title: "Conversione automatica chiavi:",
-        empty_title: "Nessun File Convertito",
-        empty_text: "Carica uno o più file dal riquadro a sinistra. Qui compariranno i risultati, uno per file.",
-        status_waiting: "In attesa di file",
-        status_done: "{total} file caricati · {valid} convertiti",
-        copy: "Copia",
-        download: "Scarica",
-        invalid_json: "JSON non valido o file malformato.",
-        no_files_alert: "Nessun file convertito"
-      },
-      en: {
-        brand_small: "GSHOP",
-        brand_title: "GSHOP Converter",
-        brand_subtitle: "to rcore tattoo",
-        upload_button: "+ Upload Files",
-        left_title: "File selection",
-        right_title: "Converted files",
-        download_all: "Download all",
-        drop_title: "No File Selected",
-        drop_text: "Drag JSON files here to convert them or click to select them.",
-        hint_title: "Automatic key conversion:",
-        empty_title: "No Converted Files",
-        empty_text: "Upload one or more files from the box on the left. Results will appear here, one per file.",
-        status_waiting: "Waiting for files",
-        status_done: "{total} files loaded · {valid} converted",
-        copy: "Copy",
-        download: "Download",
-        invalid_json: "Invalid JSON or malformed file.",
-        no_files_alert: "No converted files"
-      },
-      fr: {
-        brand_small: "GSHOP",
-        brand_title: "GSHOP Converter",
-        brand_subtitle: "to rcore tattoo",
-        upload_button: "+ Importer Fichiers",
-        left_title: "Sélection des fichiers",
-        right_title: "Fichiers convertis",
-        download_all: "Tout télécharger",
-        drop_title: "Aucun Fichier Sélectionné",
-        drop_text: "Glissez vos fichiers JSON ici ou cliquez pour les sélectionner.",
-        hint_title: "Conversion automatique des clés :",
-        empty_title: "Aucun Fichier Converti",
-        empty_text: "Importez un ou plusieurs fichiers depuis le panneau de gauche. Les résultats apparaîtront ici, un par fichier.",
-        status_waiting: "En attente de fichiers",
-        status_done: "{total} fichiers chargés · {valid} convertis",
-        copy: "Copier",
-        download: "Télécharger",
-        invalid_json: "JSON invalide ou fichier mal formé.",
-        no_files_alert: "Aucun fichier converti"
-      },
-      sp: {
-        brand_small: "GSHOP",
-        brand_title: "GSHOP Converter",
-        brand_subtitle: "to rcore tattoo",
-        upload_button: "+ Subir Archivos",
-        left_title: "Selección de archivos",
-        right_title: "Archivos convertidos",
-        download_all: "Descargar todo",
-        drop_title: "Ningún Archivo Seleccionado",
-        drop_text: "Arrastra aquí los archivos JSON para convertirlos o haz clic para seleccionarlos.",
-        hint_title: "Conversión automática de claves:",
-        empty_title: "Ningún Archivo Convertido",
-        empty_text: "Carga uno o más archivos desde el panel izquierdo. Aquí aparecerán los resultados, uno por archivo.",
-        status_waiting: "Esperando archivos",
-        status_done: "{total} archivos cargados · {valid} convertidos",
-        copy: "Copiar",
-        download: "Descargar",
-        invalid_json: "JSON no válido o archivo malformado.",
-        no_files_alert: "Ningún archivo convertido"
-      }
+    const izzyKeyMap = {
+      Collection: "collection",
+      Name: "name",
+      HashNameMale: "HashNameMale",
+      HashNameFemale: "HashNameFemale",
+      Zone: "category",
+      Price: "price"
     };
 
     const dropzone = document.getElementById("dropzone");
@@ -518,25 +661,49 @@
     const downloadAllBtn = document.getElementById("downloadAll");
     const hintText = document.getElementById("hintText");
     const langButtons = document.querySelectorAll(".lang-btn");
+    const landingView = document.getElementById("landingView");
+    const converterView = document.getElementById("converterView");
+    const brandButtons = document.querySelectorAll(".brand-btn");
+    const brandSubtitle = document.getElementById("brandSubtitle");
+    const backHome = document.getElementById("backHome");
 
     let currentLang = "it";
     let convertedFiles = [];
     let emptyStateVisible = true;
+    let currentTarget = "rcore";
 
     function t(key) {
       return translations[currentLang][key] || key;
     }
 
+    function updateSubtitle() {
+      brandSubtitle.textContent = currentTarget === "izzy"
+        ? t("subtitle_izzy")
+        : t("subtitle_rcore");
+    }
+
     function renderHint() {
-      hintText.innerHTML = `
-        ${t("hint_title")}<br>
-        Collection → collection<br>
-        Name → name<br>
-        HashNameMale → hashMale<br>
-        HashNameFemale → hashFemale<br>
-        Zone → zone<br>
-        Price → price
-      `;
+      if (currentTarget === "izzy") {
+        hintText.textContent =
+`${t("hint_title_izzy")}
+Collection → collection
+Name → name
+HashNameMale → HashNameMale
+HashNameFemale → HashNameFemale
+Zone → category
+Price → price
+Output: formato Lua`;
+      } else {
+        hintText.textContent =
+`${t("hint_title_rcore")}
+Collection → collection
+Name → name
+HashNameMale → hashMale
+HashNameFemale → hashFemale
+Zone → zone
+Price → price
+Output: JSON`;
+      }
     }
 
     function renderStaticTexts() {
@@ -549,6 +716,7 @@
         status.textContent = t("status_waiting");
       }
 
+      updateSubtitle();
       renderHint();
       renderEmptyStateIfNeeded();
       updateButtonsLanguage();
@@ -589,9 +757,9 @@
       emptyStateVisible = false;
     }
 
-    function renameKeysDeep(value) {
+    function renameKeysDeep(value, keyMap) {
       if (Array.isArray(value)) {
-        return value.map(renameKeysDeep);
+        return value.map(item => renameKeysDeep(item, keyMap));
       }
 
       if (value && typeof value === "object") {
@@ -599,7 +767,7 @@
 
         for (const [key, val] of Object.entries(value)) {
           const newKey = keyMap[key] || key;
-          out[newKey] = renameKeysDeep(val);
+          out[newKey] = renameKeysDeep(val, keyMap);
         }
 
         return out;
@@ -608,12 +776,109 @@
       return value;
     }
 
+    function toLuaValue(value) {
+      if (typeof value === "string") {
+        return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+      }
+
+      if (typeof value === "number" || typeof value === "boolean") {
+        return String(value);
+      }
+
+      if (value === null) {
+        return "nil";
+      }
+
+      return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+    }
+
+    function objectToLuaTable(obj, indentLevel = 1) {
+      const indent = "    ".repeat(indentLevel);
+      const lines = ["{"];
+
+      for (const [key, value] of Object.entries(obj)) {
+        if (Array.isArray(value)) {
+          lines.push(`${indent}${key} = ${arrayToLuaTable(value, indentLevel + 1)},`);
+        } else if (value && typeof value === "object") {
+          lines.push(`${indent}${key} = ${objectToLuaTable(value, indentLevel + 1)},`);
+        } else {
+          lines.push(`${indent}${key} = ${toLuaValue(value)},`);
+        }
+      }
+
+      lines.push(`${"    ".repeat(indentLevel - 1)}}`);
+      return lines.join("\n");
+    }
+
+    function arrayToLuaTable(arr, indentLevel = 1) {
+      const indent = "    ".repeat(indentLevel);
+      const lines = ["{"];
+
+      for (const item of arr) {
+        if (item && typeof item === "object" && !Array.isArray(item)) {
+          const luaObj = objectToLuaTable(item, indentLevel + 1);
+          const split = luaObj.split("\n");
+          lines.push(`${indent}${split[0]}`);
+          for (let i = 1; i < split.length; i++) {
+            lines.push(`${indent}${split[i]}`);
+          }
+          lines[lines.length - 1] += ",";
+        } else if (Array.isArray(item)) {
+          lines.push(`${indent}${arrayToLuaTable(item, indentLevel + 1)},`);
+        } else {
+          lines.push(`${indent}${toLuaValue(item)},`);
+        }
+      }
+
+      lines.push(`${"    ".repeat(indentLevel - 1)}}`);
+      return lines.join("\n");
+    }
+
+    function convertForRcore(parsed) {
+      const converted = renameKeysDeep(parsed, rcoreKeyMap);
+      return JSON.stringify(converted, null, 2);
+    }
+
+    function convertForIzzy(parsed) {
+      const converted = renameKeysDeep(parsed, izzyKeyMap);
+
+      if (Array.isArray(converted)) {
+        return arrayToLuaTable(converted, 1);
+      }
+
+      if (converted && typeof converted === "object") {
+        return objectToLuaTable(converted, 1);
+      }
+
+      throw new Error("Unsupported structure");
+    }
+
+    function convertContent(parsed) {
+      if (currentTarget === "izzy") {
+        return convertForIzzy(parsed);
+      }
+
+      return convertForRcore(parsed);
+    }
+
     function getOutputFilename(name) {
+      if (currentTarget === "izzy") {
+        const dot = name.lastIndexOf(".");
+        if (dot === -1) return name + ".lua";
+        return name.slice(0, dot) + ".lua";
+      }
+
       return name;
     }
 
+    function getMimeType() {
+      return currentTarget === "izzy"
+        ? "text/plain;charset=utf-8"
+        : "application/json;charset=utf-8";
+    }
+
     function downloadFile(filename, content) {
-      const blob = new Blob([content], { type: "application/json;charset=utf-8" });
+      const blob = new Blob([content], { type: getMimeType() });
       const url = URL.createObjectURL(blob);
 
       const a = document.createElement("a");
@@ -632,7 +897,7 @@
       }
     }
 
-    function createResultCard(fileName, outputName, formatted) {
+    function createResultCard(outputName, formatted) {
       const card = document.createElement("div");
       card.className = "result-card";
 
@@ -688,8 +953,7 @@
         try {
           const text = await file.text();
           const parsed = JSON.parse(text);
-          const converted = renameKeysDeep(parsed);
-          const formatted = JSON.stringify(converted, null, 2);
+          const formatted = convertContent(parsed);
           const outputName = getOutputFilename(file.name);
 
           convertedFiles.push({
@@ -697,7 +961,7 @@
             content: formatted
           });
 
-          results.appendChild(createResultCard(file.name, outputName, formatted));
+          results.appendChild(createResultCard(outputName, formatted));
           validCount++;
         } catch {
           results.appendChild(createErrorCard(file.name));
@@ -722,6 +986,31 @@
         btn.classList.toggle("active", btn.dataset.lang === lang);
       });
 
+      renderStaticTexts();
+    }
+
+    function openConverter(target) {
+      currentTarget = target;
+      updateSubtitle();
+
+      landingView.classList.add("hidden");
+      converterView.classList.remove("hidden");
+      openPicker.classList.remove("hidden");
+      backHome.classList.remove("hidden");
+      results.innerHTML = "";
+      convertedFiles = [];
+      emptyStateVisible = true;
+      renderStaticTexts();
+    }
+
+    function backToHome() {
+      landingView.classList.remove("hidden");
+      converterView.classList.add("hidden");
+      openPicker.classList.add("hidden");
+      backHome.classList.add("hidden");
+      results.innerHTML = "";
+      convertedFiles = [];
+      emptyStateVisible = true;
       renderStaticTexts();
     }
 
@@ -765,8 +1054,15 @@
       });
     });
 
+    brandButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        openConverter(btn.dataset.target);
+      });
+    });
+
+    backHome.addEventListener("click", backToHome);
+
     renderStaticTexts();
   </script>
 </body>
 </html>
-
